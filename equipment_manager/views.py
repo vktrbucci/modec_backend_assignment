@@ -1,7 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import VesselSerializer, EquipmentSerializer
+
+from .models import Equipment
 
 # Create your views here.
-
-def index(request):
-    return HttpResponse("Hello, world! This is an app for a great Company!")
