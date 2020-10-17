@@ -5,20 +5,10 @@ from .models import Vessel, Equipment
 class VesselSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vessel
-        fields = (
-            'id',
-            'code',
-        )
+        fields = '__all__'
 
 
 class EquipmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Equipment
-        fields = (
-            'id',
-            'name',
-            'code',
-            'location',
-            'vessel',
-            'status',
-        )
+        fields = '__all__'
