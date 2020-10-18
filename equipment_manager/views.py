@@ -1,40 +1,68 @@
-from django.shortcuts import render
-
 from django.http import JsonResponse
-
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
-
 from .serializers import VesselSerializer, EquipmentSerializer
 from .models import Equipment, Vessel
 
 # Create your views here.
 
-@api_view(['GET', 'POST'])
-def vessels(request):
+@api_view(['POST'])
+def vessel(request):
+    if request.method == 'POST':
+        vessel = JSONParser().parse(request)
+        serializer = VesselSerializer(data=vessel)
+
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return JsonResponse(serializer.errors, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@api_view(['POST'])
+def equipment(request):
+    if request.method == 'POST':
+        equipment = JSONParser().parse(request)
+        serializer = EquipmentSerializer(data=equipment)
+
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return JsonResponse(serializer.errors, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@api_view(['GET', 'PATCH'])
+def vesselEquipment(request, pk):
+    try:
+        vessel = Vessel.objects.get(pk=pk)
+    except:
+        return JsonResponse({"message": "This vessel does not exist."}, status=status.HTTP_404_NOT_FOUND)
+    
     if request.method == 'GET':
-        vessels = Vessel.objects.all()
+        equipment = Equipment.objects.filter(vessel=pk, status=True)
+        serializer = EquipmentSerializer(equipment, many=True)
 
-        vessel_code = request.query_params.get('code', None)
-        if vessel_code is not None:
-            vessels = vessels.filter(vessels__icontains=vessel_code)
+        if serializer.data == []:
+            return JsonResponse({"message": "There is no active equipment in this vessel."}, status=status.HTTP_404_NOT_FOUND)
+        
+        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
-        vessels_serializer = VesselSerializer(vessels, many=True)
-        return JsonResponse(vessels_serializer.data, safe=False)
+    elif request.method == 'PATCH':
+        equipment = JSONParser().parse(request)
+        serializer = EquipmentSerializer(data=equipment)
 
-    elif request.method == 'POST':
-        vessel_data = JSONParser().parse(request)
-        vessel_serializer = VesselSerializer(data=vessel_data)
+        if serializer.is_valid():
+            serializer.update(status=False)
 
-        if vessel_serializer.is_valid():
-            vessel_serializer.save()
-            return JsonResponse(vessel_serializer.data, status=status.HTTP_201_CREATED)
-        return JsonResponse(vessel_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'POST', 'PUT'])
-def equipmentList(request):
-    if request.method == 'GET':
-        activeEquipment = Equipment.objects.all()
+    return JsonResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 

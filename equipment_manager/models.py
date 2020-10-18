@@ -36,7 +36,7 @@ class Equipment(models.Model):
     location = models.CharField(
         max_length=20,
         blank=False,
-        default='Brazil',
+        null=False,
         help_text=' Location of the Equipment'
     )
 
@@ -45,19 +45,13 @@ class Equipment(models.Model):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
+        default=1,
     )
 
-    EQUIPMENT_STATUS = (
-        ('A', 'ACTIVE'),
-        ('I', 'INACTIVE'),
-    )
-
-    status = models.CharField(
-        max_length=1,
-        choices=EQUIPMENT_STATUS,
+    status = models.BooleanField(
         blank=False,
         null=False,
-        default='A',
+        default=True,
         help_text='Equipment status'
     )
 
