@@ -215,3 +215,21 @@ The URLs used to access the resources will be the following:
     The idea here is to receive partial data from an equipment, or a list of equipment, in the request and update its field "status" in the database, but I lack the technical knowledge to make it work ate the moment.
 
 
+Tests
+Testing our application will be a bit tricky, since this is my first real contact with this part of the development process. The idea here is to talk about Test Driven Development and how it would be a good choice to start this project to begin with.
+
+The test_settings.py file has a few things to configure: the database where the tests will be run against, and an email account to send warnings or results. This is a small application, so the tests do not take long, but in large applications it may take a while to run all the necessary tests. We are already running our application with SQLite, which is an in-memory database, but an application with PostgreSQL may take a lot longer because of all the I/O operations necessary.
+
+When we have just a few tests, it could be enough to write all the tests into the tests.py file. But as our test suite grows, it might be better to restructure it into a tests package. This way we can split the tests into different submodules such as test_models.py and test_views.py. This will make the tests more manageable as the application, and the amount of tests necessary, grows.
+
+A few useful libraries for writing our tests are: pytest, putest-django and pytest-cov.
+
+We also need a pytest.ini file in the root folder and we can run our tests, which still do not exist. But we will get there, maybe.
+
+It is also important to have a .coveragerc file where we determine which files we want to omit from our tests and coverage report.
+
+Like previously noted, we are not using the standard tests.py file Django created for us. Instead, we create a tests folder, which will also be a python package, and create separated files for each module we wanto to test: namely the models and the views. So, inside the tests folder, we will have the test_models.py and test_views.py files.
+
+Another useful tool for testing is mixer, whose responsibility is to fill our database with random entries, unless clearly specified, so we can run our tests against all those entries.
+
+First let's test the models.

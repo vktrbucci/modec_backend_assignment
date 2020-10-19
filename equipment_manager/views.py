@@ -22,7 +22,7 @@ def vessel(request):
     return JsonResponse(serializer.errors, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-@api_view(['POST'])
+@api_view(['POST', 'PATCH'])
 def equipment(request):
     if request.method == 'POST':
         equipment = JSONParser().parse(request)
@@ -34,10 +34,21 @@ def equipment(request):
 
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    elif request.method == 'PATCH':
+        equipment = JSONParser().parse(request)
+        serializer = EquipmentSerializer(data=equipment, partial=True)
+
+        if serializer.is_valid():
+            serializer.update()
+
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     return JsonResponse(serializer.errors, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-@api_view(['GET', 'PATCH'])
+@api_view(['GET'])
 def vesselEquipment(request, pk):
     try:
         vessel = Vessel.objects.get(pk=pk)
@@ -52,17 +63,6 @@ def vesselEquipment(request, pk):
             return JsonResponse({"message": "There is no active equipment in this vessel."}, status=status.HTTP_404_NOT_FOUND)
         
         return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-
-    elif request.method == 'PATCH':
-        equipment = JSONParser().parse(request)
-        serializer = EquipmentSerializer(data=equipment)
-
-        if serializer.is_valid():
-            serializer.update(status=False)
-
-            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return JsonResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
