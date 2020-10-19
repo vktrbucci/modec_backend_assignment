@@ -54,7 +54,7 @@ Functionalities:
         "location": "Brazil"
     }
 
-        Here we can note that it is not mandatory to provide the vessel where the sensor is installed. So we can assume that, unless specified, all sensors are to be installed in a default vessel.
+    Here we can note that it is not mandatory to provide the vessel where the sensor is installed. So we can assume that, unless specified, all sensors are to be installed in a default vessel.
     
 
     3. Set an equipment's status to inactive.
