@@ -37,9 +37,9 @@ Functionalities:
     For a vessel to be registered, we need to input its code, which is unique for each vessel.
     To input vessel data, we use the POST HTTP method.
     A valid input to register a vessel is:
-    {
-        "code": "MV32"
-    }
+        {
+            "code": "MV32"
+        }
             
     
 2. Register an equipment in a vessel.
@@ -48,27 +48,62 @@ Functionalities:
     The code of each equipment is unique, and all equipment is automatically active after registration.
     To input equipment data, we use the POST HTTP method.
     A valid input to register a piece of equipment is:
-    {
-        "name": "sensor",
-        "code": "53A95057",
-        "location": "Brazil"
-    }
+        {
+            "name": "sensor",
+            "code": "53A95057",
+            "location": "Brazil"
+        }
 
     Here we can note that it is not mandatory to provide the vessel where the sensor is installed. So we can assume that, unless specified, all sensors are to be installed in a default vessel.
     
 
-    3. Set an equipment's status to inactive.
-        Since all equipment are initially registered as active, a situation may arise where we need to deactivate one or a few of them.
-        Since we are changing only a single data of the equipment, namely its status, we use the HTTP PATCH method.
-        We must specify which equipment we want to deactivate.
+3. Set an equipment's status to inactive.
+    Since all equipment are initially registered as active, a situation may arise where we need to deactivate one or a few of them.
+    Since we are changing only a single data of the equipment, namely its status, we use the HTTP PATCH method.
+    We must specify which equipment we want to deactivate.
 
-        OBS: There may be a discussion on whether to use PUT or PATCH to update a resource. In this specific case, we can assuredly use PATCH, since we only want to apply a partial update to the resource, which will slightly reduce bandwidth consumption and increase speed of the processing. This difference may not be noted in a small application such as this one, but in larger real-time applications it may represent a significant gain in performance.
+    OBS: There may be a discussion on whether to use PUT or PATCH to update a resource. In this specific case, we can assuredly use PATCH, since we only want to apply a partial update to the resource, which will slightly reduce bandwidth consumption and increase speed of the processing. This difference may not be noted in a small application such as this one, but in larger real-time applications it may represent a significant gain in performance.
 
 
-    4. Return all active equipment in a given vessel.
-        Here we want to retrieve a resource, so we use the GET HTTP method.
-        We a pass a single vessel and want to see all of its equipment that is active.
-        This resource needs a filter to work, because we need to check whether each equipment is active and in the requested vessel.
+4. Return all active equipment in a given vessel.
+    Here we want to retrieve a resource, so we use the GET HTTP method.
+    We a pass a single vessel and want to see all of its equipment that is active.
+    This resource needs a filter to work, because we need to check whether each equipment is active and in the requested vessel.
+    The expected response will be something like this:
+        [
+            {
+                "id": 4,
+                "name": "compressor",
+                "code": "6410B9D8",
+                "location": "Brazil",
+                "status": true,
+                "vessel": 1
+            },
+            {
+                "id": 7,
+                "name": "sensor",
+                "code": "53654248",
+                "location": "Brazil",
+                "status": true,
+                "vessel": 1
+            },
+            {
+                "id": 6,
+                "name": "sensor",
+                "code": "53A94248",
+                "location": "Brazil",
+                "status": true,
+                "vessel": 1
+            },
+            {
+                "id": 5,
+                "name": "sensor",
+                "code": "53A95057",
+                "location": "Brazil",
+                "status": true,
+                "vessel": 1
+            }
+        ]
 
 
 So, our database tables will look something like this:
@@ -90,7 +125,7 @@ We could make the code field in each table be our primary keys, but it is not a 
 
 
 The URLs used to access the resources will be the following:
-    vessel/
+        vessel/
         Using the POST HTTP method.
         Will be used to register a new vessel.
         Ex: Let's register the MV33 vessel into our system.
@@ -100,13 +135,11 @@ The URLs used to access the resources will be the following:
                 "code": "MV33"
             }
 
-            This will result in a 201 Created HTTP status code.
+    This will result in a 201 Created HTTP status code.
+    But if we try to register the same vessel again, we will receive the 400 Bad Request HTTP status code, saying that a vessel with this code already exists.
+    Also, trying to use a different HTTP method other than POST will render the 405 Method Not Allowed HTTP response.
 
-            But if we try to register the same vessel again, we will receive the 400 Bad Request HTTP status code, saying that a vessel with this code already exists.
-
-            Also, trying to use a different HTTP method other than POST will render the 405 Method Not Allowed HTTP response.
-
-    vessel/equipment/
+        vessel/equipment/
         Using the POST HTTP method.
         Will be used to register a new equipment.
         Ex: Let's register a new equipment.
@@ -118,16 +151,13 @@ The URLs used to access the resources will be the following:
                 "location": "Brazil"
             }
 
-            This will result in a 201 Created HTTP status code.
-            
-            And since all new equipment are automatically set to active, we don't need to provide that data. It is also important to note that if we don not provide a vessel, the new equipment will be assigned to the first vessel registered, which is the vessel MV102.
-
-            If we try to register the same equipment again, we will receive the 400 Bad Request HTTP status code, saying that an equipment with this code already exists.
-
-            Also, trying to use a different HTTP method other than POST will render the 405 Method Not Allowed HTTP response.
+    This will result in a 201 Created HTTP status code.        
+    And since all new equipment are automatically set to active, we don't need to provide that data. It is also important to note that if we don not provide a vessel, the new equipment will be assigned to the first vessel registered, which is the vessel MV102.
+    If we try to register the same equipment again, we will receive the 400 Bad Request HTTP status code, saying that an equipment with this code already exists.
+    Also, trying to use a different HTTP method other than POST will render the 405 Method Not Allowed HTTP response.
 
 
-    vessel/<pk>/
+        vessel/<pk>/
         Using the GET HTTP method.
         Will be used to return all active equipment in the given vessel.
         Ex: Let's list all the active equipment of the MV102 vessel, which is the first register in our database.
@@ -167,14 +197,13 @@ The URLs used to access the resources will be the following:
                 }
             ]
 
-            And the 200 OK HTTP status code.
+    And the 200 OK HTTP status code.
+    If we pass a vessel that does not exist, or if there is no active equipment in that vessel, the API will return the 404 Not Found HTTP status code.
 
-            If we pass a vessel that does not exist, or if there is no active equipment in that vessel, the API will return the 404 Not Found HTTP status code.
-
-    vessel/equipment/<pk>/
+        vessel/equipment/
         Using the PATCH HTTP method.
         Will be used to set the status of a given equipment to inactive.
         
-        The idea here is to receive partial data from an equipment, or a list of equipment, in the request and update its field "status" in the database, but I lack the technical knowledge to make it work ate the moment.
+    The idea here is to receive partial data from an equipment, or a list of equipment, in the request and update its field "status" in the database, but I lack the technical knowledge to make it work ate the moment.
 
 
