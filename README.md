@@ -2,8 +2,7 @@ Creation of a backend to manage different equipment of an FPSO (Floating Product
 
 This app is part of the selection process to fulfill a position as software developer at MODEC, Inc.
 
-Please take note that this is my first real project and it is prone to a lot of errors, mainly in the code execution. With that said, let's begin. =D
-
+Please take note that this is my first real project and it is prone to a lot of errors, messy code and unexpected results. But I also had a lot of fun doing it and would love to get some feedback. Hope you enjoy. With that said, let's begin. =D
 
 
 The first real step here is to understand why we need this API and what exactly it does. This system will be used to register vessels owned by the company and assign several different kinds of equipment to each vessel. Each vessel will have its own unique code of identification, and also each equipment will have its own unique code. Each piece of equipment must be related to a specific vessel, and will have an indication of whether it is active or not.
@@ -19,7 +18,7 @@ The Django REST Framework utilizes the Model, View, Serializer archutecture, whe
     The View layer represents the business logic of the application;
     And the Serializer layer handles the conversion of the data to a web standard format, namely JSON.
 
-So the typicall flow of and application using this archutecture is like:
+So the typical flow of an application using this archutecture is like:
     1. User sends a request for a specific resource using the JSON format;
     2. The View passes the data through the Serializer;
     3. The Serializer translates the request into query format for communication with the database, and sends it back to the View;
@@ -301,3 +300,8 @@ Like previously noted, we are not using the standard tests.py file Django create
 Testing the models.
 Here we have setup a very simple test for registering a vessel and we can run it with the command:
     py.test
+
+The test fails, obviously. It is not nearly well-written enough and there are much more tests we can write that represents the use cases and requirements of our application.
+
+And this is exactly where the Test Driven Development comes in: first you write the tests and only then you develop the code. Of course the tests must be well design so they do not have unreachable requirements, but cover enough cases so the misuse of the application is a rare occurence. Certainly a thing to take note for further projects.
+
