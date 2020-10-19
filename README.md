@@ -32,6 +32,7 @@ The resources in our application can be accessed via URLs, and the type of inter
     Resources: vessel and equipment, where equipment is a subset of vessel.
 
 Functionalities:
+
 1. Register a vessel.
     The information used to describe a vessel will be solely its code.
     For a vessel to be registered, we need to input its code, which is unique for each vessel.
