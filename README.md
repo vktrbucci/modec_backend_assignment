@@ -31,28 +31,28 @@ So the typicall flow of and application using this archutecture is like:
 The resources in our application can be accessed via URLs, and the type of interaction will be determined by the HTTP verbs used in the request. So, our API has two resources and four main functionalities:
     Resources: vessel and equipment, where equipment is a subset of vessel.
 
-    Functionalities:
-    1. Register a vessel.
-        The information used to describe a vessel will be solely its code.
-        For a vessel to be registered, we need to input its code, which is unique for each vessel.
-        To input vessel data, we use the POST HTTP method.
-        A valid input to register a vessel is:
-            {
-                "code": "MV32"
-            }
+Functionalities:
+1. Register a vessel.
+    The information used to describe a vessel will be solely its code.
+    For a vessel to be registered, we need to input its code, which is unique for each vessel.
+    To input vessel data, we use the POST HTTP method.
+    A valid input to register a vessel is:
+    {
+        "code": "MV32"
+    }
             
     
-    2. Register an equipment in a vessel.
-        There are a few information used to describe an equipment: name, code, location, status and vessel.
-        Every and each piece of equipment must be related to a single vessel, and a vessel can have lots of equipment.
-        The code of each equipment is unique, and all equipment is automatically active after registration.
-        To input equipment data, we use the POST HTTP method.
-        A valid input to register a piece of equipment is:
-            {
-                "name": "sensor",
-                "code": "53A95057",
-                "location": "Brazil"
-            }
+2. Register an equipment in a vessel.
+    There are a few information used to describe an equipment: name, code, location, status and vessel.
+    Every and each piece of equipment must be related to a single vessel, and a vessel can have lots of equipment.
+    The code of each equipment is unique, and all equipment is automatically active after registration.
+    To input equipment data, we use the POST HTTP method.
+    A valid input to register a piece of equipment is:
+    {
+        "name": "sensor",
+        "code": "53A95057",
+        "location": "Brazil"
+    }
 
         Here we can note that it is not mandatory to provide the vessel where the sensor is installed. So we can assume that, unless specified, all sensors are to be installed in a default vessel.
     
@@ -72,6 +72,8 @@ The resources in our application can be accessed via URLs, and the type of inter
 
 
 So, our database tables will look something like this:
+
+
     Vessel
         code: string
 
@@ -93,6 +95,7 @@ The URLs used to access the resources will be the following:
         Will be used to register a new vessel.
         Ex: Let's register the MV33 vessel into our system.
             We need to access http://localhost:8000/vessel/ and fill the body of our request with the data we need, which is:
+
             {
                 "code": "MV33"
             }
@@ -108,6 +111,7 @@ The URLs used to access the resources will be the following:
         Will be used to register a new equipment.
         Ex: Let's register a new equipment.
             We need to access http://localhost:8000/vessel/equipment/ and fill the body of our request with the data we need, which is:
+            
             {
                 "name": "sensor",
                 "code": "53A94248",
@@ -171,5 +175,6 @@ The URLs used to access the resources will be the following:
         Using the PATCH HTTP method.
         Will be used to set the status of a given equipment to inactive.
         
-        The idea here is to receive an equipment and set its status to inactive, but I could not make it work. 
+        The idea here is to receive partial data from an equipment, or a list of equipment, in the request and update its field "status" in the database, but I lack the technical knowledge to make it work ate the moment.
+
 
