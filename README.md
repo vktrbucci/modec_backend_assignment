@@ -37,9 +37,11 @@ Functionalities:
     For a vessel to be registered, we need to input its code, which is unique for each vessel.
     To input vessel data, we use the POST HTTP method.
     A valid input to register a vessel is:
-        {
-            "code": "MV32"
-        }
+
+
+    {
+        "code": "MV32"
+    }
             
     
 2. Register an equipment in a vessel.
@@ -48,11 +50,14 @@ Functionalities:
     The code of each equipment is unique, and all equipment is automatically active after registration.
     To input equipment data, we use the POST HTTP method.
     A valid input to register a piece of equipment is:
-        {
-            "name": "sensor",
-            "code": "53A95057",
-            "location": "Brazil"
-        }
+
+ 
+    {
+        "name": "sensor",
+        "code": "53A95057",
+        "location": "Brazil"
+    }
+
 
     Here we can note that it is not mandatory to provide the vessel where the sensor is installed. So we can assume that, unless specified, all sensors are to be installed in a default vessel.
     
@@ -70,40 +75,43 @@ Functionalities:
     We a pass a single vessel and want to see all of its equipment that is active.
     This resource needs a filter to work, because we need to check whether each equipment is active and in the requested vessel.
     The expected response will be something like this:
-        [
-            {
-                "id": 4,
-                "name": "compressor",
-                "code": "6410B9D8",
-                "location": "Brazil",
-                "status": true,
-                "vessel": 1
-            },
-            {
-                "id": 7,
-                "name": "sensor",
-                "code": "53654248",
-                "location": "Brazil",
-                "status": true,
-                "vessel": 1
-            },
-            {
-                "id": 6,
-                "name": "sensor",
-                "code": "53A94248",
-                "location": "Brazil",
-                "status": true,
-                "vessel": 1
-            },
-            {
-                "id": 5,
-                "name": "sensor",
-                "code": "53A95057",
-                "location": "Brazil",
-                "status": true,
-                "vessel": 1
-            }
-        ]
+
+
+    [
+        {
+            "id": 4,
+            "name": "compressor",
+            "code": "6410B9D8",
+            "location": "Brazil",
+            "status": true,
+            "vessel": 1
+        },
+        {
+            "id": 7,
+            "name": "sensor",
+            "code": "53654248",
+            "location": "Brazil",
+            "status": true,
+            "vessel": 1
+        },
+        {
+            "id": 6,
+            "name": "sensor",
+            "code": "53A94248",
+            "location": "Brazil",
+            "status": true,
+            "vessel": 1
+        },
+        {
+            "id": 5,
+            "name": "sensor",
+            "code": "53A95057",
+            "location": "Brazil",
+            "status": true,
+            "vessel": 1
+        }
+    ]
+
 
 
 So, our database tables will look something like this:
